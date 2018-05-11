@@ -8,7 +8,7 @@ var chatbotTools = window.chatbotTools || {};
             authtoken = token;
         }
         else{
-            alert('no auth token');
+            //alert('no auth token');
             //window.location.href = '/';
         }
     }).catch( function handleTokenError(error) {
@@ -22,18 +22,19 @@ var chatbotTools = window.chatbotTools || {};
             authtoken = "";
             //window.location = "index.html";
         });
-        $("#upload").click(function(e){
+        $("#uploadSubmit").click(function(e){
             e.preventDefault();
             console.log(authtoken);
             
             $.ajax({
-                method: 'GET', 
-                url: ' https://gbb8xz2947.execute-api.us-east-1.amazonaws.com/testing_Cognito',
-                headers:{
-                    Authorization : authtoken
-                },
+                method: 'POST', 
+                url: 'https://atvjafo94j.execute-api.us-east-1.amazonaws.com/test0/upload-file-to-s3',
+                
                 data: "hello: hello",
-                contentType: 'application/json',
+                contentType: 'multipart/form-data',
+                headers:{
+                    "Access-Control-Allow-Headers": "*"
+                },
                 success: completeRequest,
                 error: function ajaxError(jqXHR, errorThrown) {
                     console.error('Error uploading, Details: ', errorThrown);
@@ -48,3 +49,10 @@ var chatbotTools = window.chatbotTools || {};
         console.log("success: result " + JSON.stringify(result));
     }
 }(jQuery));
+
+/***
+ * 
+ * headers:{
+                    Authorization : authtoken
+                }
+ */

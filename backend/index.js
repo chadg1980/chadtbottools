@@ -1,25 +1,42 @@
 'use strict';
 const AWS = require('aws-sdk');
-const fileType = require('file-type');
+//const fileType = require('file-type');
+const multipart = require("parse-multipart");
 const s3 = new AWS.S3({apiVersion: '2006-03-01', region: 'us-east-1'});
 
 function getParams(image_name_ext, data, imageContentType){
+    let bucketname = ""
+    /*
+    based on the file 
+        if image file
+            bucketname = "images.chatbot"
+        else if video file
+            bucketname = "videos.chatbot"
+        else
+            unknown file extention
+            exit without saving to s3
 
     let params = {
-        Bucket: "coachpic.healthlate.com", 
+        Bucket: bucketname, 
         Key:  image_name_ext, 
         Body: data, 
         ContentType: imageContentType
         
     };
     return params;
+    */
 }
+
 
 exports.handler = (event, context, callback) => {
 
-    let bodyBuffer = new Buffer(event['body-json'].toString(), base64);
+    let bodyBuffer = new Buffer(event['body-json'].toString(), 'base64');
     let boundry = multipart.getBoundry(event.params.header['content-type']);
     let parts = multipart.Parse(bodyBuffer, boundry);
+    for(let i = 0; i < parts.length; i++){
+        let part = parts[i];
+        cososle.log(part);
+    }
     callback(null, { result : 'SUCCESS', files : parts } );
     /*
     let this_id = -1;
