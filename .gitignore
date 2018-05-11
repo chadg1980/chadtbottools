@@ -61,3 +61,5 @@ typings/
 
 event.json
 .lambda
+
+*.zip

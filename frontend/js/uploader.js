@@ -22,15 +22,19 @@ var chatbotTools = window.chatbotTools || {};
             authtoken = "";
             //window.location = "index.html";
         });
-        $("#uploadSubmit").click(function(e){
+
+        $("#uploadForm").submit(function(e){
             e.preventDefault();
             console.log(authtoken);
+            console.log( $("#uploadForm")[0]) 
+            let thisUploadForm = ("#uploadForm")[0];
+            let formdata = new FormData(thisUploadForm);
             
             $.ajax({
                 method: 'POST', 
                 url: 'https://atvjafo94j.execute-api.us-east-1.amazonaws.com/test0/upload-file-to-s3',
-                
-                data: "hello: hello",
+                processData: false,
+                data: formdata,
                 contentType: 'multipart/form-data',
                 headers:{
                     "Access-Control-Allow-Headers": "*"
@@ -42,7 +46,8 @@ var chatbotTools = window.chatbotTools || {};
                     alert('An error occured:\n' + jqXHR.responseText);
                 }
             });
-        });
+        })
+        
     });
 
     function completeRequest(result){

@@ -1,7 +1,7 @@
 'use strict';
 const AWS = require('aws-sdk');
 //const fileType = require('file-type');
-const multipart = require("parse-multipart");
+const multipart = require('aws-lambda-multipart-parser');
 const s3 = new AWS.S3({apiVersion: '2006-03-01', region: 'us-east-1'});
 
 function getParams(image_name_ext, data, imageContentType){
@@ -30,14 +30,8 @@ function getParams(image_name_ext, data, imageContentType){
 
 exports.handler = (event, context, callback) => {
 
-    let bodyBuffer = new Buffer(event['body-json'].toString(), 'base64');
-    let boundry = multipart.getBoundry(event.params.header['content-type']);
-    let parts = multipart.Parse(bodyBuffer, boundry);
-    for(let i = 0; i < parts.length; i++){
-        let part = parts[i];
-        cososle.log(part);
-    }
-    callback(null, { result : 'SUCCESS', files : parts } );
+    console.log( "body:",  multipart.parse(event, spotText) );
+    callback(null, { "hello":"world" } );
     /*
     let this_id = -1;
     this_id = event.coachid_internal;
