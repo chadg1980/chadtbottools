@@ -7,5 +7,8 @@
     "test": "make test"
   },
   "author": "Chad H. Glaser",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "aws-lambda-multipart-parser": "^0.1.2"
+  }
 }
