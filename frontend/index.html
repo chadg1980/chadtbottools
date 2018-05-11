@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <title>Chatbot Tools</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
+    
+</head>
+<body>
+    <div class="title">
+        <h1>Chatbot Tools Sign In</h1>
+    </div>
+    <div class="content">
+        <section class="form">
+            <form id="signinForm">
+                <ul class="form_flex">
+                    <li>
+                        <label for="emailInputSignin">Email Address</label>
+                        <input class="input_box" type="text" id="emailInputSignin" placeholder="Email" required>
+                    </li>
+                    <li>
+                        <label for="passwordInputSignin">Password</label>
+                        <input class="input_box" type="password" id="passwordInputSignin" placeholder="Password" pattern=".*" required></br>
+                    </li>
+                    <li>
+                        <input class="submit" type="submit" value="Sign in">
+                    </li>
+                    <li>
+                        <p id="errormessage"></p>
+                    </li>
+                </ul>
+            </form>
+            
+        </section>
+
+    </div>
+    
+    <div id="modal">
+        <div class="modal_content">
+            <span id="close" class="close">&times;</span>
+            
+            <ul class="modalFlex">
+                <li>
+                    <label for="nPassword">Create a new password</label>
+                    <input  type="password" id="nPassword" >
+                </li>
+                <li>
+                    <button type="button"   id="nPasswordButton"> Submit</button>
+                    <button type="button"   id="canceldButton">   Cancel</button>
+                </li>
+                <li>Password Policy:</li>
+                <ul class="password_rules">
+                    
+                    <li>
+                        requires numbers
+                    </li>
+                    <li>
+                        requires special character
+                    </li>
+                    <li>
+                        requires uppercase letter
+                    </li>
+                    <li>
+                        requires lowercase letter
+                    </li>
+                </ul>
+                <li>
+                    <p id="modalerror"></p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.231.1.min.js"></script>
+    <script src="js/amazon-cognito-identity.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/cognito-auth.js"></script>
+</body>
+</html>
