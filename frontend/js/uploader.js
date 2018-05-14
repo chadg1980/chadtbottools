@@ -2,6 +2,7 @@ var chatbotTools = window.chatbotTools || {};
 
 (function uploaderScopeWrapper($){
     let authtoken;
+    let urlPost = "https://atvjafo94j.execute-api.us-east-1.amazonaws.com/test0/upload-file-to-s3/"
 
     chatbotTools.authToken.then(function setAuthToken(token){
         if(token){
@@ -26,15 +27,19 @@ var chatbotTools = window.chatbotTools || {};
         $("#uploadForm").submit(function(e){
             e.preventDefault();
             console.log(authtoken);
-            console.log( $("#uploadForm")[0]) 
-            let thisUploadForm = ("#uploadForm")[0];
-            let formdata = new FormData(thisUploadForm);
+            
+            let fileData = $('#imageOrVideoFile')[0].files[0];
+            console.log(fileData);
+            
+            if(fileData.length == 0 || fileData.length >=2){
+                $('#upload_response').html("<p>File upload error</p>");
+            }
             
             $.ajax({
                 method: 'POST', 
-                url: 'https://atvjafo94j.execute-api.us-east-1.amazonaws.com/test0/upload-file-to-s3',
+                url: urlPost,
                 processData: false,
-                data: formdata,
+                data: fileData,
                 contentType: 'multipart/form-data',
                 headers:{
                     "Access-Control-Allow-Headers": "*"

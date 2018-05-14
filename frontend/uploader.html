@@ -17,15 +17,9 @@
             <form method="post" id="uploadForm" name="uploadForm" type="POST" action="" enctype="multipart/form-data">
                 <legend> Upload a profile picture</legend>
                 <ul class="form_flex">
-                    <!--
-                    <li>
-                        <label for="coachid"> Coach ID </label>
-                        <input type="number" name="coachid">
-                    </li>
-                    -->
                     <li>
                         <label for="picture">Choose picture</label>
-                        <input type="file" multiple accept ="image/*" name="imageOrVideoFile" id="iamgeOrVideo"> 
+                        <input type="file" multiple accept ="image/*|video/*" name="imageOrVideoFile" id="imageOrVideoFile"> 
                     </li>
                     <li>
                         <input type="submit" id="uploadSubmit" name="uploadSubmit" value="submit">
