@@ -2,7 +2,7 @@ var chatbotTools = window.chatbotTools || {};
 
 (function uploaderScopeWrapper($){
     let authtoken;
-    let urlPost = "https://atvjafo94j.execute-api.us-east-1.amazonaws.com/test0/upload-file-to-s3/"
+    let urlPost = "https://atvjafo94j.execute-api.us-east-1.amazonaws.com/test1/{proxy+}"
 
     chatbotTools.authToken.then(function setAuthToken(token){
         if(token){
@@ -28,21 +28,32 @@ var chatbotTools = window.chatbotTools || {};
             e.preventDefault();
             console.log(authtoken);
             
-            let fileData = $('#imageOrVideoFile')[0].files[0];
-            console.log(fileData);
+            //let fileData = $('#uploadForm');
+            //console.log(fileData);
+
+            let img = $("#imageOrVideoFile");
+            console.log(img[0].files[0] );
+            let formdata = new FormData();
+            formdata.append('file', img[0].files[0], img[0].files[0].name);
             
+            /*
             if(fileData.length == 0 || fileData.length >=2){
                 $('#upload_response').html("<p>File upload error</p>");
-            }
+            }*/
             
             $.ajax({
                 method: 'POST', 
                 url: urlPost,
                 processData: false,
-                data: fileData,
-                contentType: 'multipart/form-data',
+                data: formdata,
                 headers:{
-                    "Access-Control-Allow-Headers": "*"
+                   
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS, POST',
+                    'Access-Control-Allow-Headers': 'Content-Type'
+                },
+                accepts:{
+                    "content-type" : "application.json"
                 },
                 success: completeRequest,
                 error: function ajaxError(jqXHR, errorThrown) {

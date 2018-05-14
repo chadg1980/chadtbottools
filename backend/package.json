@@ -9,6 +9,8 @@
   "author": "Chad H. Glaser",
   "license": "ISC",
   "dependencies": {
-    "aws-lambda-multipart-parser": "^0.1.2"
-  }
+    "aws-lambda-multipart-parser": "^0.1.2",
+    "busboy": "0.2.14"
+  },
+  "devDependencies": {}
 }
