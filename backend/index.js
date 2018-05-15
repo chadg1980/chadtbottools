@@ -1,6 +1,8 @@
 'use strict';
 const AWS = require('aws-sdk');
+const fs = require('fs');
 //const fileType = require('file-type');
+const path = require("path")
 const multipart = require('aws-lambda-multipart-parser');
 const s3 = new AWS.S3({apiVersion: '2006-03-01', region: 'us-east-1'});
 
@@ -30,19 +32,24 @@ function getParams(image_name_ext, data, imageContentType){
 
 exports.handler = (event, context, callback) => {
     
+    console.log(event.body);
     let req = event.body;
     let mpart = multipart.parse(event, true);
     console.log(mpart);
+    let mpartBuff = new Buffer(JSON.stringify(mpart["file"].content));
+    let mpart64Buff = mpartBuff.toString('base64');
+    console.log("mpart64Buff /n" + mpart64Buff);
     let filename = mpart["file"].filename;
-    let imageContentType = mpart["file"].contentType;
     console.log(filename);
-    let data = JSON.stringify(mpart["file"].content);
+    let imageContentType = mpart["file"].contentType;
+    let file = mpart["file"].content;    
     
-    const base64Data = new Buffer(base64.replace(/^data:image\/\w+;base64,/, ""), 'base64')
-    console.log(base64Data);
+    let decoded = new Buffer(JSON.stringify(mpart["file"]), 'binary');
+    console.log(decoded);
     
-    let file_params = getParams(filename, data, imageContentType)
-    let putObjectPromise = s3.putObject(file_params).promise();
+    let file_params = getParams(filename, mpart64Buff, imageContentType)
+    //let putObjectPromise = s3.putObject(file_params).promise();
+    let putObjectPromise = s3.upload(file_params).promise();
         putObjectPromise.then( data => {
 
             console.log("s3 data");
@@ -53,6 +60,7 @@ exports.handler = (event, context, callback) => {
         }).catch( err => {
             console.log("s3 error: " + err);
             //console.log("Error uploading data: ", data);
+            context.fail("failed to upload")
             callback(null, err);
         })
     

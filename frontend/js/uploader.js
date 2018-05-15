@@ -45,7 +45,7 @@ var chatbotTools = window.chatbotTools || {};
                 method: 'POST', 
                 url: urlPost,
                 processData: false,
-                data: formdata,
+                data: img[0].files[0],
                 headers:{
                    
                     'Access-Control-Allow-Origin': '*',
