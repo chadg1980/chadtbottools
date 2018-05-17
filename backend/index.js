@@ -1,113 +1,66 @@
-'use strict';
-const AWS = require('aws-sdk');
-const fs = require('fs');
-//const fileType = require('file-type');
-const path = require("path")
-const multipart = require('aws-lambda-multipart-parser');
-const s3 = new AWS.S3({apiVersion: '2006-03-01', region: 'us-east-1'});
+//const async = require('async');
+//const AWS = require('aws-sdk');
+//const s3 = new AWS.S3({apiVersion: '2006-03-01', region: 'us-east-1'});
+const util = require('util');
+const Airtable = require('airtable');
+var base = new Airtable({apiKey: 'keyeHGDbZUL80FwT2'}).base('appazQ1yAI1aqEkEM');
 
+/*
 function getParams(image_name_ext, data, imageContentType){
     let bucketname = "coachpic.healthlate.com"
-    /*
-    based on the file 
-        if image file
-            bucketname = "images.chatbot"
-        else if video file
-            bucketname = "videos.chatbot"
-        else
-            unknown file extention
-            exit without saving to s3
-    */
-    let params = {
-        Bucket: bucketname, 
-        Key:  image_name_ext, 
-        Body: data, 
-        ContentType: imageContentType
-        
-    };
-    return params;
     
 }
+*/
+exports.handler = function (event, context, callback) {
+    console.log("starting...");
+     // Read options from the event.
+     /**
+      * Uncomment below to see details
+      */
+     //console.log("Reading options from event:\n", util.inspect(event, {depth: 5})); 
+     
+    var srcBucket = event.Records[0].s3.bucket.name;
+     // Object key may have spaces or unicode non-ASCII characters.
+    var srcKey    =
+    decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, " "));
+    if(srcBucket == "images.chatbot" ){
+        console.log("writing " + srcKey +" to image airtable");
+        let currentrecord = "";
+        let newrecord = "";
+        base('file_name').select({
+            //Select top 1 record
+            maxRecords: 1,
+            
+        }).eachPage(function page(records, fetchNextPage){
+            records.forEach(function(record){
+                 currentrecord = record.get('file_name');
+            });
 
+            fetchNextPage();
 
-exports.handler = (event, context, callback) => {
-    
-    console.log(event.body);
-    let req = event.body;
-    let mpart = multipart.parse(event, true);
-    console.log(mpart);
-    let mpartBuff = new Buffer(JSON.stringify(mpart["file"].content));
-    let mpart64Buff = mpartBuff.toString('base64');
-    console.log("mpart64Buff /n" + mpart64Buff);
-    let filename = mpart["file"].filename;
-    console.log(filename);
-    let imageContentType = mpart["file"].contentType;
-    let file = mpart["file"].content;    
-    
-    let decoded = new Buffer(JSON.stringify(mpart["file"]), 'binary');
-    console.log(decoded);
-    
-    let file_params = getParams(filename, mpart64Buff, imageContentType)
-    //let putObjectPromise = s3.putObject(file_params).promise();
-    let putObjectPromise = s3.upload(file_params).promise();
-        putObjectPromise.then( data => {
-
-            console.log("s3 data");
-            console.log(data);
-            console.log("successfully upladed the image");
-            callback(null, "uploaded : coachpic.healthlate.com/" + filename);
-
-        }).catch( err => {
-            console.log("s3 error: " + err);
-            //console.log("Error uploading data: ", data);
-            context.fail("failed to upload")
-            callback(null, err);
-        })
-    
-    callback(null, {"event" : "success"}  );
-
-    
-
-    /*if (!req.base64Image) {
-        const msg = 'Invalid resize request: no "base64Image" field supplied';
-        console.log(msg);
-        return callback(msg);
-    }*/
-
-    //get the params for s3
-    /*
-    let file_params = getParams(image_name_ext, data, imageContentType);
-    var putObjectPromise = s3.putObject(file_params).promise();
-    putObjectPromise.then( data => {
-
-        console.log("s3 data");
-        console.log(data);
-        console.log("successfully upladed the image");
-        callback(null, "https://s3.amazonaws.com/coachpic.healthlate.com/"+image_name_ext);
-    }).catch( err => {
-        console.log("s3 error: " + err);
-        //console.log("Error uploading data: ", data);
-        callback(null, err);
-    })*/
-    
+        }, function done(err){
+            if(err){console.error(err)}
+            console.log(newrecord);
+            newrecord = currentrecord +", "+srcKey;
+            base('file_name').update('rec07SS71i0qBi8II', {
+                "file_name" : newrecord
+              }, function(err, record) {
+                  if (err) { console.error(err); return; }
+                  console.log(record.get('file_name'));
+              });
+            callback(null, "message");
+            
+        });
+       
+    }
+    else if(srcBucket == "videos.chatbot"){
+        console.log("write " + srcKey +" to videos airtable");
+        callback(null, "message");
+    }
+    else{
+        console.log("Something is wrong, srcKey: "+ srcKey + " is not going to the airtable");
+    }
 
    
-    /*
-    let this_id = -1;
-    this_id = event.coachid_internal;
-    const req = event;
-    const operation = req.operation;
-    let height = 200;
-    let width = 200;
-    let imageData;
-    
-    let fileName = "coachid_" +this_id; 
-    let imageContentType;
-    let image_name_ext
-    delete req.operation;
-
-     
-*/
-       
-    
+    callback(null, "message");
 };
