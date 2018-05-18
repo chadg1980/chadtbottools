@@ -5,12 +5,6 @@ const util = require('util');
 const Airtable = require('airtable');
 var base = new Airtable({apiKey: 'keyeHGDbZUL80FwT2'}).base('appazQ1yAI1aqEkEM');
 
-/*
-function getParams(image_name_ext, data, imageContentType){
-    let bucketname = "coachpic.healthlate.com"
-    
-}
-*/
 exports.handler = function (event, context, callback) {
     console.log("starting...");
      // Read options from the event.
@@ -23,7 +17,7 @@ exports.handler = function (event, context, callback) {
      // Object key may have spaces or unicode non-ASCII characters.
     var srcKey    =
     decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, " "));
-    if(srcBucket == "images.chatbot" ){
+    if(srcBucket == "images.chatbot" || srcBucket == "videos.chatbot"){
         console.log("writing " + srcKey +" to image airtable");
         let currentrecord = "";
         let newrecord = "";
@@ -40,7 +34,8 @@ exports.handler = function (event, context, callback) {
 
         }, function done(err){
             if(err){console.error(err)}
-            console.log(newrecord);
+            //console.log(currentrecord);
+            //console.log(newrecord);
             newrecord = currentrecord +", "+srcKey;
             base('file_name').update('rec07SS71i0qBi8II', {
                 "file_name" : newrecord
@@ -52,10 +47,6 @@ exports.handler = function (event, context, callback) {
             
         });
        
-    }
-    else if(srcBucket == "videos.chatbot"){
-        console.log("write " + srcKey +" to videos airtable");
-        callback(null, "message");
     }
     else{
         console.log("Something is wrong, srcKey: "+ srcKey + " is not going to the airtable");
