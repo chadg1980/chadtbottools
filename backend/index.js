@@ -3,7 +3,7 @@
 //const s3 = new AWS.S3({apiVersion: '2006-03-01', region: 'us-east-1'});
 const util = require('util');
 const Airtable = require('airtable');
-var base = new Airtable({apiKey: 'keyeHGDbZUL80FwT2'}).base('appazQ1yAI1aqEkEM');
+var base = new Airtable({apiKey: ''}).base('appazQ1yAI1aqEkEM');
 
 exports.handler = function (event, context, callback) {
     console.log("starting...");
